@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <!--*-->
+    <id>Furesoft.Rpc.Mmf</id>
+    <!--*-->
+    <version>1.0.0</version>
+    <title>Furesoft.Rpc.Mmf</title>
+    <!--*-->
+    <authors>Furesoft</authors>
+    <owners>Furesoft</owners>
+    <!--
+    <licenseUrl></licenseUrl>
+    <projectUrl></projectUrl>
+    <iconUrl></iconUrl>
+-->
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <!--*-->
+    <description>Simple RPC Service for IPC with memory mapped files as backend</description>
+    <!--*-->
+    <releaseNotes>Simple RPC Service for IPC with memory mapped files as backend</releaseNotes>
+    <copyright>Copyright ©  2018</copyright>
+    <tags>ipc, rpc, mmf</tags>
+    <dependencies>
+      <!--
+      <dependency id="SampleDependency" version="1.0" />
+-->
+    </dependencies>
+  </metadata>
+</package>

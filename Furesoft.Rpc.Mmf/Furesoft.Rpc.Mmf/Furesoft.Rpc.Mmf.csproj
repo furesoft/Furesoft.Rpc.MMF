@@ -74,6 +74,9 @@
     <Compile Include="RpcServices.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="package.nuspec">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

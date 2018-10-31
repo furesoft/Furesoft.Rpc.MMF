@@ -2,6 +2,7 @@
 using Furesoft.Rpc.Mmf.Messages;
 using Furesoft.Rpc.Mmf.Proxy;
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,6 +27,7 @@ namespace Furesoft.Rpc.Mmf
             sender.StartReader();
         }
 
+        [DebuggerStepThrough]
         private void Sender_DataReceived(object sender, MemoryMappedDataReceivedEventArgs e)
         {
             var response = RpcServices.Deserialize(e.Data);
