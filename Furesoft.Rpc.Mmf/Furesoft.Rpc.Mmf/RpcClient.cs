@@ -2,6 +2,7 @@
 using Furesoft.Rpc.Mmf.Messages;
 using Furesoft.Rpc.Mmf.Proxy;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -40,8 +41,18 @@ namespace Furesoft.Rpc.Mmf
             {
                 throw new RpcException(ex.Interface, ex.Name, new Exception(ex.Message));
             }
+            else if(response is RpcEventCallMessage ev)
+            {
+                InvokeHandlers(ev);
+            }
 
             mre.Set();
+        }
+
+        internal void InvokeHandlers(RpcEventCallMessage ev)
+        {
+            var e = RpcEventRepository.Get(ev.Name);
+            e.Invoke(ev.Args[0], (EventArgs)ev.Args[1]);
         }
 
         object ReturnValue;
@@ -147,9 +158,7 @@ namespace Furesoft.Rpc.Mmf
         {
             return Impromptu.ActLike<Interface>(new InterfaceProxy<Interface>(this));
         }
-
-      
-
+        
         public void Dispose()
         {
             sender.Dispose();

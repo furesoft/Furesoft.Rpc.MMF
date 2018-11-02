@@ -41,6 +41,17 @@ namespace Furesoft.Rpc.Mmf
             listener.StartReader();
         }
 
+        public void CallEvent(string name, object sender, EventArgs e)
+        {
+            var msg = new RpcEventCallMessage
+            {
+                Name = name,
+                Args = new List<object> { sender, e }
+            };
+
+            listener.Write(RpcServices.Serialize(msg));
+        }
+
         public IList<MethodInfo> GetIndexProperties(object obj)
         {
             if (obj == null)
@@ -161,7 +172,7 @@ namespace Furesoft.Rpc.Mmf
                     {
                         var p = GetIndexProperties(_binds[method.Interface]).First();
 
-                        r = InvokeMethod(p, method, ri.Indizes);
+                        r = InvokeMethod(p, ri, ri.Indizes);
                     }
                     else
                     {
@@ -170,22 +181,30 @@ namespace Furesoft.Rpc.Mmf
                         args.AddRange(ri.Indizes);
                         args.Add(ri.Value);
 
-                        InvokeMethod(p, method, args.ToArray());
+                        InvokeMethod(p, ri, args.ToArray());
                     }
                 }
-                else
+                else if(method is RpcMethod rm)
                 {
+                    var name = rm.Name.Replace("get_", "");
+
+                    if(name.StartsWith("On"))
+                    {
+                        r = RpcEventRepository.Get(name);
+                        return;
+                    }
+
                     var m = type.GetMethod(method.Name);
 
                     if (m?.ReturnType == typeof(void))
                     {
                         r = null;
 
-                        InvokeMethod(m, method, method.Args.ToArray());
+                        InvokeMethod(m, rm, rm.Args.ToArray());
                     }
                     else
                     {
-                        r = InvokeMethod(m, method, method.Args.ToArray());
+                        r = InvokeMethod(m, rm, rm.Args.ToArray());
                     }
                 }
 

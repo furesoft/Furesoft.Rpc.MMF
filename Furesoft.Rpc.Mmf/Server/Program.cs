@@ -1,6 +1,7 @@
 ﻿using Furesoft.Rpc.Mmf;
 using Interface;
 using System;
+using System.Threading;
 
 namespace Server
 {
@@ -11,8 +12,11 @@ namespace Server
         {
             var rpc = new RpcServer("ExampleChannel");
 
-            rpc.Bind<IMath>(new MathImpl());
+            rpc.Bind<IMath>(new MathImpl(rpc));
+            
             rpc.Start();
+
+            Thread.Sleep(5000);
 
             Console.ReadLine();
         }

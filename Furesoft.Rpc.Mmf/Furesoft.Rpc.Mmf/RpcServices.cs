@@ -6,16 +6,16 @@ namespace Furesoft.Rpc.Mmf
 {
     public static class RpcServices
     {
-        public static byte[] Serialize(RpcMethod m)
+        public static byte[] Serialize(RpcMessage m)
         {
             var ms = new MemoryStream();
             XamlServices.Save(ms, m);
 
             return ms.ToArray();
         }
-        public static RpcMethod Deserialize(byte[] src)
+        public static RpcMessage Deserialize(byte[] src)
         {
-            return (RpcMethod)XamlServices.Load(new MemoryStream(src));
+            return (RpcMessage)XamlServices.Load(new MemoryStream(src));
         }
     }
 }

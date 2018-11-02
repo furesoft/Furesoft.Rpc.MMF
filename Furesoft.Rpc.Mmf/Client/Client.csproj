@@ -55,7 +55,7 @@
       <Name>Furesoft.Rpc.Mmf</Name>
     </ProjectReference>
     <ProjectReference Include="..\Interface\Interface.csproj">
-      <Project>{79e58cd7-4a51-4e28-80a8-611f5d3d07aa}</Project>
+      <Project>{cc3a785c-0549-4cb0-a303-3b8f63af9831}</Project>
       <Name>Interface</Name>
     </ProjectReference>
   </ItemGroup>

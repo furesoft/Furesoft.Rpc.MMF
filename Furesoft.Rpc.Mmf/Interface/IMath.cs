@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Furesoft.Rpc.Mmf;
+using System;
 
 namespace Interface
 {
@@ -7,5 +8,6 @@ namespace Interface
         int Add(int x, int y);
         object MethodWithException();
         int this[int index] { get; set; }
+        RpcEvent OnIndexChanged { get; set; }
     }
 }

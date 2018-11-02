@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Dynamic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Furesoft.Rpc.Mmf
@@ -16,12 +18,6 @@ namespace Furesoft.Rpc.Mmf
 
         public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)
         {
-            if(binder.Name.EndsWith("Async"))
-            {
-                result = Task.Run(()=> rpcClient.CallMethod<Interface>(binder.Name, args));
-                return true;
-            }
-
             result = rpcClient.CallMethod<Interface>(binder.Name, args);
 
             return true;
@@ -29,18 +25,40 @@ namespace Furesoft.Rpc.Mmf
 
         public override bool TrySetMember(SetMemberBinder binder, object value)
         {
-            Run(() =>
-                rpcClient.SetProperty<Interface>(binder.Name, value) //.Wait();
-            );
+            if (!IsEvent(binder.Name))
+            {
+                rpcClient.SetProperty<Interface>(binder.Name, value);
+            }
 
             return true;
         }
 
         public override bool TryGetMember(GetMemberBinder binder, out object result)
         {
-            result = Call(() => rpcClient.GetProperty<Interface>(binder.Name));
+            if (!IsEvent(binder.Name))
+            {
+                result = Call(() => rpcClient.GetProperty<Interface>(binder.Name));
+            }
+
+            var e = RpcEventRepository.Get(binder.Name);
+            
+
+            result = e;
 
             return true;
+        }
+
+        public override IEnumerable<string> GetDynamicMemberNames()
+        {
+            return typeof(Interface).GetMembers().Select(_ =>_.Name);
+        }
+
+        private bool IsEvent(string name)
+        {
+            var t = typeof(Interface);
+            var events = t.GetProperty(name);
+
+            return events != null && events.PropertyType == typeof(RpcEvent);
         }
 
         public override bool TryGetIndex(GetIndexBinder binder, object[] indexes, out object result)
@@ -58,6 +76,8 @@ namespace Furesoft.Rpc.Mmf
 
             return true;
         }
+
+        
 
         public void Run(Action act)
         {

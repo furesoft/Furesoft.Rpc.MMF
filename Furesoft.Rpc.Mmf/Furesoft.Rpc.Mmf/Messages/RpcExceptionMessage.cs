@@ -1,6 +1,6 @@
 ﻿namespace Furesoft.Rpc.Mmf.Messages
 {
-    public class RpcExceptionMessage : RpcMethod
+    public class RpcExceptionMessage : RpcMessage
     {
         public RpcExceptionMessage(string @interface, string name, string message)
         {

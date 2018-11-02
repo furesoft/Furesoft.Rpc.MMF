@@ -48,6 +48,7 @@
     <Compile Include="Communicator\MemoryMappedDataReceivedEventArgs.cs" />
     <Compile Include="Communicator\MemoryMappedFileCommunicator.cs" />
     <Compile Include="InterfaceProxy.cs" />
+    <Compile Include="Messages\RpcEventCallMessage.cs" />
     <Compile Include="Messages\RpcExceptionMessage.cs" />
     <Compile Include="Messages\RpcIndexMethod.cs" />
     <Compile Include="Messages\RpcMethod.cs" />
@@ -69,7 +70,10 @@
     <Compile Include="Proxy\Optimization\BinderHash.cs" />
     <Compile Include="Proxy\Optimization\Util.cs" />
     <Compile Include="RpcClient.cs" />
+    <Compile Include="RpcEvent.cs" />
+    <Compile Include="RpcEventRepository.cs" />
     <Compile Include="RpcException.cs" />
+    <Compile Include="RpcMessage.cs" />
     <Compile Include="RpcServer.cs" />
     <Compile Include="RpcServices.cs" />
   </ItemGroup>

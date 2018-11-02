@@ -1,6 +1,6 @@
 ﻿namespace Furesoft.Rpc.Mmf.Messages
 {
-    public class RpcMethodAwnser : RpcMethod
+    public class RpcMethodAwnser : RpcMessage
     {
         public object ReturnValue { get; set; }
     }
