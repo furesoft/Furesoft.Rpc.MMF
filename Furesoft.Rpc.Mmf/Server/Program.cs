@@ -12,10 +12,10 @@ namespace Server
         {
             var rpc = new RpcServer("ExampleChannel");
 
-            rpc.Bind<IMath>(new MathImpl(rpc));
+            rpc.Bind<IMath>(new MathImpl());
             
             rpc.Start();
-
+            
             Thread.Sleep(5000);
 
             Console.ReadLine();

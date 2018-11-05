@@ -6,14 +6,12 @@ namespace Server
 {
     class MathImpl : IMath
     {
-        public MathImpl(RpcServer s)
+        public MathImpl()
         {
-            this.s = s;
-            OnIndexChanged = RpcEvent.Register(s, nameof(OnIndexChanged));
+            OnIndexChanged = RpcEvent.Register(nameof(OnIndexChanged));
         }
 
         private int mul = 1;
-        private readonly RpcServer s;
 
         public int this[int index]
         {
@@ -31,7 +29,7 @@ namespace Server
 
         public int Add(int x, int y)
         {
-            OnIndexChanged.Invoke("hello: " + (x + y), EventArgs.Empty);
+            OnIndexChanged["hello: " + (x + y), EventArgs.Empty]();
 
             return x + y;
         }

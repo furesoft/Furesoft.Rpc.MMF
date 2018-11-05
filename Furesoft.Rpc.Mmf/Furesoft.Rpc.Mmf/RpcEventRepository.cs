@@ -15,7 +15,7 @@ namespace Furesoft.Rpc.Mmf
             }
             else
             {
-                events.Add(name, new RpcEvent(null, name));
+                events.Add(name, new RpcEvent(name));
 
                 return events[name];
             }

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Furesoft.Rpc.Mmf.Communicator;
+using Furesoft.Rpc.Mmf.Messages;
+using System;
 using System.Collections.Generic;
 
 namespace Furesoft.Rpc.Mmf
@@ -7,19 +9,36 @@ namespace Furesoft.Rpc.Mmf
     {
         public string Name { get; set; }
 
-        public static RpcEvent Register(RpcServer server, string name)
+        private MemoryMappedFileCommunicator communicator;
+
+        public static RpcEvent Register(string name)
         {
-            return new RpcEvent(server, name);
+            return new RpcEvent(name);
         }
 
-        internal RpcEvent(RpcServer s, string name)
+        internal RpcEvent(string name)
         {
             Name = name;
-            this.s = s;
+            communicator = new MemoryMappedFileCommunicator(Name + ".event", 5000);
+            communicator.WritePosition = 0;
+            communicator.ReadPosition = 0;
+            communicator.DataReceived += Communicator_DataReceived;
+        }
+
+        private void Communicator_DataReceived(object sender, MemoryMappedDataReceivedEventArgs e)
+        {
+            var r = (RpcEventCallMessage)RpcServices.Deserialize(e.Data);
+
+            if(r.Name == Name)
+            {
+                foreach (var h in handlers)
+                {
+                    h(r.Args[0], (EventArgs)r.Args[1]);
+                }
+            }
         }
 
         private List<EventHandler> handlers = new List<EventHandler>();
-        private readonly RpcServer s;
 
         public static RpcEvent operator +(RpcEvent e, EventHandler handler)
         {
@@ -34,9 +53,29 @@ namespace Furesoft.Rpc.Mmf
             return e;
         }
 
+        public Action this[object sender, EventArgs e]
+        {
+            get
+            {
+                Invoke(sender, e);
+                return new Action(() => { });
+            }
+        }
+
         public void Invoke(object sender, EventArgs e)
         {
-            s?.CallEvent(Name, sender, e);
+            var msg = new RpcEventCallMessage
+            {
+                Name = Name,
+                Args = new List<object> { sender, e }
+            };
+
+            communicator.Write(RpcServices.Serialize(msg));
+        }
+
+        public void Start()
+        {
+            communicator.StartReader();
         }
     }
 }

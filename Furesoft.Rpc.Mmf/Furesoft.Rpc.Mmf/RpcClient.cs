@@ -12,7 +12,9 @@ namespace Furesoft.Rpc.Mmf
 {
     public class RpcClient : IDisposable
     {
+        //ToDo: make it generic to replace the method like to tcp
         private MemoryMappedFileCommunicator sender;
+        private MemoryMappedFileCommunicator events;
 
         public RpcClient(string name)
         {
@@ -21,11 +23,27 @@ namespace Furesoft.Rpc.Mmf
             sender.ReadPosition = 0;
             sender.WritePosition = 2500;
             sender.DataReceived += Sender_DataReceived;
+
+            events = new MemoryMappedFileCommunicator(name + ".events", 5000);
+            events.ReadPosition = 0;
+            events.WritePosition = 2500;
+            events.DataReceived += Events_DataReceived;
+        }
+
+        private void Events_DataReceived(object sender, MemoryMappedDataReceivedEventArgs e)
+        {
+            var response = RpcServices.Deserialize(e.Data);
+
+            if (response is RpcEventCallMessage ev)
+            {
+                InvokeHandlers(ev);
+            }
         }
 
         public void Start()
         {
             sender.StartReader();
+            events.StartReader();
         }
 
         [DebuggerStepThrough]
@@ -40,10 +58,6 @@ namespace Furesoft.Rpc.Mmf
             else if (response is RpcExceptionMessage ex)
             {
                 throw new RpcException(ex.Interface, ex.Name, new Exception(ex.Message));
-            }
-            else if(response is RpcEventCallMessage ev)
-            {
-                InvokeHandlers(ev);
             }
 
             mre.Set();

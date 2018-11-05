@@ -41,7 +41,7 @@ namespace Furesoft.Rpc.Mmf
             }
 
             var e = RpcEventRepository.Get(binder.Name);
-            
+            e.Start();
 
             result = e;
 

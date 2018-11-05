@@ -18,7 +18,6 @@ namespace Furesoft.Rpc.Mmf
 
             listener.WritePosition = 0;
             listener.ReadPosition = 2500;
-
             listener.DataReceived += Listener_DataReceived;
         }
 
@@ -39,17 +38,6 @@ namespace Furesoft.Rpc.Mmf
         public void Start()
         {
             listener.StartReader();
-        }
-
-        public void CallEvent(string name, object sender, EventArgs e)
-        {
-            var msg = new RpcEventCallMessage
-            {
-                Name = name,
-                Args = new List<object> { sender, e }
-            };
-
-            listener.Write(RpcServices.Serialize(msg));
         }
 
         public IList<MethodInfo> GetIndexProperties(object obj)
