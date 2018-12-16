@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using Furesoft.Rpc.Mmf;
+using Furesoft.Rpc.Mmf.Auth;
 using Furesoft.Rpc.Mmf.Serializer;
 using Interface;
 
@@ -11,20 +13,26 @@ namespace Client
     {
         static void Main(string[] args)
         {
-            var client = new RpcClient("ExampleChannel", null, null);
+            var client = new RpcClient("ExampleChannel", new Bootstrapper(), null);
             client.Start();
 
+            var interfaces = client.GetInterfaceNames();
             var info = client.GetInfo<IMath>();
 
+            Thread.Sleep(2000);
+
             var tmp = Path.GetTempFileName() + ".cs";
-            File.WriteAllText(tmp, info.ToString());
+            File.WriteAllText(tmp, info?.ToString());
             Process.Start(tmp);
 
             var math = client.Bind<IMath>();
 
             var p = math.AddPosition(10, 15);
+            p = math.TranslatePoint(p);
 
-            math.MethodWithException();
+            p.GetX();
+
+            //math.MethodWithException();
             math.OnIndexChanged += Math_IndexChanged;
 
             Console.WriteLine("result: " + math.Add(15, 5));
@@ -48,6 +56,14 @@ namespace Client
         private static void Math_IndexChanged(object sender, EventArgs e)
         {
             Console.WriteLine(sender);
+        }
+    }
+
+    internal class Bootstrapper : RpcBootstrapper
+    {
+        public override void Boot()
+        {
+            AuthModule.Enable(this);
         }
     }
 }

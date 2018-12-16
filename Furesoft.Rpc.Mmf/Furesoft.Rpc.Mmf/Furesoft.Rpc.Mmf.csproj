@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="Auth\AuthAttribute.cs" />
     <Compile Include="Auth\AuthModule.cs" />
+    <Compile Include="Auth\Token.cs" />
     <Compile Include="Communicator\MemoryMappedDataReceivedEventArgs.cs" />
     <Compile Include="Communicator\MemoryMappedFileCommunicator.cs" />
     <Compile Include="ExceptionTrace.cs" />

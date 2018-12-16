@@ -13,6 +13,7 @@ namespace Furesoft.Rpc.Mmf
     {
         private MemoryMappedFileCommunicator listener;
         internal Dictionary<string, object> _binds = new Dictionary<string, object>();
+
         internal Dictionary<string, Type> _iTypes = new Dictionary<string, Type>();
 
         internal Type GetInterfaceType(string name)
@@ -165,6 +166,8 @@ namespace Furesoft.Rpc.Mmf
         {
             var msg = Serializer.Deserialize(e.Data);
 
+            Bootstrapper.HandleRequest(msg, this);
+
             object r = null;
 
             if (msg == null) return;
@@ -173,7 +176,7 @@ namespace Furesoft.Rpc.Mmf
             {
                 var type = _binds[msg.Interface].GetType();
 
-                Bootstrapper.OnBeforeRequest(msg, type);
+                msg = Bootstrapper.OnBeforeRequest(msg, type, false);
 
                 if (msg is RpcIndexMethod ri)
                 {
@@ -223,8 +226,10 @@ namespace Furesoft.Rpc.Mmf
                     Name = msg.Name,
                     ReturnValue = r
                 };
+                returner.Headers = msg.Headers;
+                //ToDo: fix headers
 
-                var ret = Bootstrapper.OnAfterRequest(returner, type);
+                var ret = Bootstrapper.OnAfterRequest(returner, _iTypes[msg.Interface], false);
 
                 var exSt = Singleton<ExceptionStack>.Instance;
                 if(exSt.Any())

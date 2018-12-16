@@ -3,6 +3,8 @@ using Furesoft.Rpc.Mmf.Auth;
 using Furesoft.Rpc.Mmf.Serializer;
 using Interface;
 using System;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading;
 
 namespace Server
@@ -16,8 +18,8 @@ namespace Server
             // rpc.Bootstrapper = ...
             //rpc.BeforeRequest +=..
             //rpc.AfterRequest += ..
-            
-            AuthModule.Claims.Add("math:sub");
+
+            AuthModule.Claims.Add("math:add");
 
             rpc.Bind<IMath>(new MathImpl());
             
@@ -27,10 +29,14 @@ namespace Server
         }
     }
 
+    //ToDo: add Bootstrapper PipeLine
+
     internal class TestBoot : RpcBootstrapper
     {
         public override void Boot()
         {
+            AuthModule.AppID = Guid.Parse(GetType().Assembly.GetCustomAttribute<GuidAttribute>().Value);
+
             AuthModule.Enable(this);
             base.Boot();
         }

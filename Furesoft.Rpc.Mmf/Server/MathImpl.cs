@@ -29,11 +29,11 @@ namespace Server
 
         public RpcEvent OnIndexChanged { get; set; }
 
-        [Auth("math:add")]
+        
         public int Add(int x, int y)
         {
             OnIndexChanged["hello: " + (x + y), EventArgs.Empty]();
-
+            
             return x + y;
         }
 
@@ -46,6 +46,11 @@ namespace Server
         public Point AddPosition(int x, int y)
         {
             return new Point() { X = x, Y = y };
+        }
+
+        public Point TranslatePoint(Point input)
+        {
+            return new Point { X = -input.X, Y = -input.Y };
         }
     }
 }

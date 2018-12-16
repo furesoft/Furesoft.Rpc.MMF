@@ -1,4 +1,5 @@
 ﻿using Furesoft.Rpc.Mmf.InformationApi;
+using System.Linq;
 
 namespace Furesoft.Rpc.Mmf
 {
@@ -15,9 +16,13 @@ namespace Furesoft.Rpc.Mmf
         public InterfaceInfo GetInfo(string name)
         {
             var t = server.GetInterfaceType(name);
-
-
+            
             return InterfaceInfoBuilder.StartBuild(t);
+        }
+
+        public string[] GetInterfaceNames()
+        {
+            return server._iTypes.Keys.ToArray();
         }
     }
 }

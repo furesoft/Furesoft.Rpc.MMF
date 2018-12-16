@@ -20,6 +20,8 @@ namespace Furesoft.Rpc.Mmf
 
         public RpcBootstrapper Bootstrapper;
 
+        internal Dictionary<string, Type> _iTypes = new Dictionary<string, Type>();
+
 
         public RpcClient(string name, RpcBootstrapper bootstrp = null, RpcSerializer serializer = null)
         {
@@ -66,13 +68,15 @@ namespace Furesoft.Rpc.Mmf
             if (response is RpcMethodAwnser awnser)
             {
                 ReturnValue = awnser.ReturnValue;
-                var ret = Bootstrapper?.OnAfterRequest(awnser, Type.GetType(response.Interface));
+                var ret = Bootstrapper?.OnAfterRequest(awnser, _iTypes[response.Interface], true);
                 if (ret != null) ReturnValue = ret;
             }
             else if (response is RpcExceptionMessage ex)
             {
                 Singleton<ExceptionStack>.Instance.Push(new RpcException(ex.Interface, ex.Name, new Exception(ex.Message)));
             }
+
+            Bootstrapper?.HandleRequest(response, this);
 
             mre.Set();
         }
@@ -101,7 +105,7 @@ namespace Furesoft.Rpc.Mmf
                 Args = args.ToList()
             };
 
-            Bootstrapper?.OnBeforeRequest(m, typeof(Interface));
+            m = (RpcMethod)Bootstrapper?.OnBeforeRequest(m, typeof(Interface), true);
             sender.Write(Serializer.Serialize(m));
 
             mre.WaitOne();
@@ -187,12 +191,26 @@ namespace Furesoft.Rpc.Mmf
         public dynamic BindDynamic<Interface>()
             where Interface : class
         {
+            var t = typeof(Interface);
+
+            if (!_iTypes.ContainsKey(t.Name))
+            {
+                _iTypes.Add(t.Name, t);
+            }
+
             return new InterfaceProxy<Interface>(this);
         }
 
         public Interface Bind<Interface>()
             where Interface : class
         {
+            var t = typeof(Interface);
+
+            if (!_iTypes.ContainsKey(t.Name))
+            {
+                _iTypes.Add(t.Name, t);
+            }
+        
             return Impromptu.ActLike<Interface>(new InterfaceProxy<Interface>(this));
         }
         
@@ -206,6 +224,13 @@ namespace Furesoft.Rpc.Mmf
             var api = Bind<IInterfaceInfo>();
 
             return api.GetInfo(name);
+        }
+
+        public string[] GetInterfaceNames()
+        {
+            var api = Bind<IInterfaceInfo>();
+
+            return api.GetInterfaceNames();
         }
 
         public InterfaceInfo GetInfo<T>()

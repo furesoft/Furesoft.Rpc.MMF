@@ -21,8 +21,9 @@ namespace Furesoft.Rpc.Mmf
             ret.Functions = BuildFuncInfoColl(iType);
             ret.ThrowsExceptionInfo = BuildExceptionInfo(iType);
             ret.Properties = BuildPropInfoCol(iType);
-           
-            
+
+            ret.Structs = StructCollector.Structs;
+
             //ToDo: implement collect interface info
 
             return ret;
@@ -52,9 +53,9 @@ namespace Furesoft.Rpc.Mmf
             fi.ReturnType = f.ReturnType.Name;
             fi.NeedsAuth = f.GetCustomAttribute<Auth.AuthAttribute>() != null;
 
-            if(f.ReturnType.IsValueType && !StructCollector.Structs.ContainsKey(f.ReturnType.Name))
+            if (!f.ReturnType.IsSimpleType())
             {
-                //StructCollector.CollectType(f.ReturnType);
+                StructCollector.CollectType(f.ReturnType);
             }
 
             fi.ThrowsExceptionInfo = BuildExceptionInfo(f);
@@ -78,7 +79,7 @@ namespace Furesoft.Rpc.Mmf
                 fi.Indizes.Add(BuildArgInfo(pi));
             }
 
-            if (f.PropertyType.IsValueType && !StructCollector.Structs.ContainsKey(f.PropertyType.Name))
+            if (!f.PropertyType.IsSimpleType())
             {
                 StructCollector.CollectType(f.PropertyType);
             }
@@ -156,6 +157,11 @@ namespace Furesoft.Rpc.Mmf
             ai.IsOptional = arg.IsOptional;
             ai.Type = arg.ParameterType.Name;
             ai.ThrowsExceptionInfo = BuildExceptionInfo(arg);
+
+            if (!arg.ParameterType.IsSimpleType())
+            {
+                StructCollector.CollectType(arg.ParameterType);
+            }
 
             //ToDo: continue argumentinfo build!
 

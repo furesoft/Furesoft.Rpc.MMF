@@ -10,6 +10,7 @@ namespace Interface
     public interface IMath
     {
         [Description("sum two values")]
+        [Auth("math:add")]
         int Add(int x, int y);
 
         [Auth]
@@ -19,6 +20,9 @@ namespace Interface
         [Description("Adds a Point to the given coordinates")]
         [ThrowsException(typeof(ArgumentOutOfRangeException))]
         Point AddPosition(int x, int y);
+
+        [Description("Translate the given Point into negative value")]
+        Point TranslatePoint(Point input);
 
         [Description("Get/Set Value based on index")]
         int this[int index] { get; set; }

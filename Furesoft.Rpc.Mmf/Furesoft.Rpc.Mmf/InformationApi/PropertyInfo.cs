@@ -18,24 +18,33 @@ namespace Furesoft.Rpc.Mmf.InformationApi
         {
             var sb = new StringBuilder();
 
-            sb.Append(Name + " ");
+            sb.AppendLine(base.ToString());
 
-            if(Indizes.Any())
+            if (Type != nameof(RpcEvent)) // if is property not an event
             {
-                sb.Append("[ ");
+                sb.Append("prop " + Name + " ");
 
-                sb.Append(Indizes.ToString());
+                if (Indizes.Any())
+                {
+                    sb.Append("[ ");
 
-                sb.Append(" ]");
+                    sb.Append(Indizes.ToString());
+
+                    sb.Append(" ]");
+                }
+
+                sb.Append("{ ");
+
+                if (CanGet) sb.Append("get; ");
+                if (CanSet) sb.Append("set; ");
+
+                sb.Append("}");
+                sb.Append(" -> " + Type);
             }
-
-            sb.Append("{ ");
-
-            if (CanGet) sb.Append("get; ");
-            if (CanSet) sb.Append("set; ");
-
-            sb.Append("}");
-            sb.Append(" -> " + Type);
+            else
+            {
+                sb.Append("event " + Name + "(object, EventArgs) -> void");
+            }
 
             return sb.ToString();
         }
