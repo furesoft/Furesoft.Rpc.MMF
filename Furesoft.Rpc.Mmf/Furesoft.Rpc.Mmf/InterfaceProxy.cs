@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Dynamic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Furesoft.Rpc.Mmf
 {
@@ -10,12 +10,13 @@ namespace Furesoft.Rpc.Mmf
         where Interface : class
     {
         private RpcClient rpcClient;
-        
+
         public InterfaceProxy(RpcClient rpcClient)
         {
             this.rpcClient = rpcClient;
         }
 
+        [DebuggerStepThrough]
         public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)
         {
             result = rpcClient.CallMethod<Interface>(binder.Name, args);
@@ -50,7 +51,7 @@ namespace Furesoft.Rpc.Mmf
 
         public override IEnumerable<string> GetDynamicMemberNames()
         {
-            return typeof(Interface).GetMembers().Select(_ =>_.Name);
+            return typeof(Interface).GetMembers().Select(_ => _.Name);
         }
 
         private bool IsEvent(string name)
@@ -77,12 +78,11 @@ namespace Furesoft.Rpc.Mmf
             return true;
         }
 
-        
-
         public void Run(Action act)
         {
             act();
         }
+
         public T Call<T>(Func<T> act)
         {
             return act();

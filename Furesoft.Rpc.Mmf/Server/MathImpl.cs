@@ -1,6 +1,8 @@
 ﻿using Interface;
 using System;
 using Furesoft.Rpc.Mmf;
+using Furesoft.Rpc.Mmf.Auth;
+using System.Diagnostics;
 
 namespace Server
 {
@@ -27,6 +29,7 @@ namespace Server
 
         public RpcEvent OnIndexChanged { get; set; }
 
+        [Auth("math:add")]
         public int Add(int x, int y)
         {
             OnIndexChanged["hello: " + (x + y), EventArgs.Empty]();
@@ -34,9 +37,15 @@ namespace Server
             return x + y;
         }
 
+        [DebuggerStepThrough]
         public object MethodWithException()
         {
-            return new ArgumentNullException("An Error occured!!");
+            throw new ArgumentNullException("An Error occured!!");
+        }
+
+        public Point AddPosition(int x, int y)
+        {
+            return new Point() { X = x, Y = y };
         }
     }
 }

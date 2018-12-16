@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 namespace Furesoft.Rpc.Mmf
 {
+    [Serializable]
     public class RpcEvent
     {
         public string Name { get; set; }

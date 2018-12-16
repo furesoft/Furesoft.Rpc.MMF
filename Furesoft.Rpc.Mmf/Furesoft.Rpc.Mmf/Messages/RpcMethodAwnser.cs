@@ -1,5 +1,8 @@
-﻿namespace Furesoft.Rpc.Mmf.Messages
+﻿using System;
+
+namespace Furesoft.Rpc.Mmf.Messages
 {
+    [Serializable]
     public class RpcMethodAwnser : RpcMessage
     {
         public object ReturnValue { get; set; }

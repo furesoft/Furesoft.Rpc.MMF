@@ -40,10 +40,7 @@ namespace Furesoft.Rpc.Mmf
                 result = Call(() => rpcClient.GetProperty<Interface>(binder.Name));
             }
 
-            var e = RpcEventRepository.Get(binder.Name);
-            e.Start();
-
-            result = e;
+            
 
             return true;
         }
