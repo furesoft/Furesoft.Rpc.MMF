@@ -20,6 +20,9 @@ namespace Interface
         [ThrowsException(typeof(ArgumentOutOfRangeException))]
         Point AddPosition(int x, int y);
 
+        [Description("Translate the given Point into negative value")]
+        Point TranslatePoint(Point input);
+
         [Description("Get/Set Value based on index")]
         int this[int index] { get; set; }
 

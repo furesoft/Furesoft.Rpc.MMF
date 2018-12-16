@@ -47,5 +47,10 @@ namespace Server
         {
             return new Point() { X = x, Y = y };
         }
+
+        public Point TranslatePoint(Point input)
+        {
+            return new Point { X = -input.X, Y = -input.Y };
+        }
     }
 }

@@ -20,7 +20,7 @@ namespace Furesoft.Rpc.Mmf.InformationApi
         {
             var sb = new StringBuilder();
 
-            sb.AppendLine("\r\n");
+            sb.AppendLine(Environment.NewLine);
             sb.AppendLine(base.ToString());
 
             if(NeedsAuth)
@@ -31,7 +31,7 @@ namespace Furesoft.Rpc.Mmf.InformationApi
             sb.AppendLine($"func {Name}({Arguments.ToString()}) -> {ReturnType};\r\n");
             sb.AppendLine("");
 
-            return sb.ToString();
+            return sb.ToString().InsertLast(Environment.NewLine);
         }
     }
 }

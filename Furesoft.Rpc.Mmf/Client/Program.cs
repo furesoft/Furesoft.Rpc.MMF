@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using Furesoft.Rpc.Mmf;
 using Furesoft.Rpc.Mmf.Serializer;
 using Interface;
@@ -16,15 +17,18 @@ namespace Client
 
             var info = client.GetInfo<IMath>();
 
+            Thread.Sleep(2000);
+
             var tmp = Path.GetTempFileName() + ".cs";
-            File.WriteAllText(tmp, info.ToString());
+            File.WriteAllText(tmp, info?.ToString());
             Process.Start(tmp);
 
             var math = client.Bind<IMath>();
 
             var p = math.AddPosition(10, 15);
+            p = math.TranslatePoint(p);
 
-            math.MethodWithException();
+            //math.MethodWithException();
             math.OnIndexChanged += Math_IndexChanged;
 
             Console.WriteLine("result: " + math.Add(15, 5));
