@@ -18,6 +18,9 @@ namespace Furesoft.Rpc.Mmf
             return AfterRequest?.Invoke(msg, type);
         }
 
+        public virtual void HandleRequest(RpcMessage msg, RpcServer server) { }
+        public virtual void HandleRequest(RpcMessage msg, RpcClient client) { }
+
         public virtual void Boot() { }
     }
 }

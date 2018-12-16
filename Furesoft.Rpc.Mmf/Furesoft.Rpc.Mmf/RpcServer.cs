@@ -13,6 +13,7 @@ namespace Furesoft.Rpc.Mmf
     {
         private MemoryMappedFileCommunicator listener;
         internal Dictionary<string, object> _binds = new Dictionary<string, object>();
+
         internal Dictionary<string, Type> _iTypes = new Dictionary<string, Type>();
 
         internal Type GetInterfaceType(string name)
@@ -164,6 +165,8 @@ namespace Furesoft.Rpc.Mmf
         private void Listener_DataReceived(object sender, MemoryMappedDataReceivedEventArgs e)
         {
             var msg = Serializer.Deserialize(e.Data);
+
+            Bootstrapper.HandleRequest(msg, this);
 
             object r = null;
 

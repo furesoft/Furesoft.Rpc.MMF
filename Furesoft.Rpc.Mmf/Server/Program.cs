@@ -16,7 +16,7 @@ namespace Server
             // rpc.Bootstrapper = ...
             //rpc.BeforeRequest +=..
             //rpc.AfterRequest += ..
-            
+
             AuthModule.Claims.Add("math:sub");
 
             rpc.Bind<IMath>(new MathImpl());

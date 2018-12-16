@@ -74,6 +74,8 @@ namespace Furesoft.Rpc.Mmf
                 Singleton<ExceptionStack>.Instance.Push(new RpcException(ex.Interface, ex.Name, new Exception(ex.Message)));
             }
 
+            Bootstrapper.HandleRequest(response, this);
+
             mre.Set();
         }
 
