@@ -17,7 +17,7 @@ namespace Server
             //rpc.BeforeRequest +=..
             //rpc.AfterRequest += ..
 
-            AuthModule.Claims.Add("math:sub");
+            AuthModule.Claims.Add("math:add");
 
             rpc.Bind<IMath>(new MathImpl());
             
@@ -27,11 +27,13 @@ namespace Server
         }
     }
 
+    //ToDo: add Bootstrapper PipeLine
+
     internal class TestBoot : RpcBootstrapper
     {
         public override void Boot()
         {
-            AuthModule.Enable(this);
+            AuthModule.Enable(this, TimeSpan.FromHours(1));
             base.Boot();
         }
     }

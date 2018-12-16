@@ -10,6 +10,7 @@ namespace Interface
     public interface IMath
     {
         [Description("sum two values")]
+        [Auth("math:add")]
         int Add(int x, int y);
 
         [Auth]

@@ -9,5 +9,13 @@ namespace Furesoft.Rpc.Mmf
 
         public string Interface { get; set; }
         public string Name { get; set; }
+
+        public void AddHeader(string v)
+        {
+            if(!Headers.Contains(v))
+            {
+                Headers.Add(v);
+            }
+        }
     }
 }

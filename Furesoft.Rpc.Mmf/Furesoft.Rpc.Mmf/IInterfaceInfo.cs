@@ -3,5 +3,6 @@
     public interface IInterfaceInfo
     {
         InterfaceInfo GetInfo(string name);
+        string[] GetInterfaceNames();
     }
 }

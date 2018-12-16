@@ -29,7 +29,7 @@ namespace Server
 
         public RpcEvent OnIndexChanged { get; set; }
 
-        [Auth("math:add")]
+        
         public int Add(int x, int y)
         {
             OnIndexChanged["hello: " + (x + y), EventArgs.Empty]();

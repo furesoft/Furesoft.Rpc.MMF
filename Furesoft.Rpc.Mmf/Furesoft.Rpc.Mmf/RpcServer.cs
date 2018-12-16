@@ -176,7 +176,7 @@ namespace Furesoft.Rpc.Mmf
             {
                 var type = _binds[msg.Interface].GetType();
 
-                Bootstrapper.OnBeforeRequest(msg, type);
+                msg = Bootstrapper.OnBeforeRequest(msg, type, false);
 
                 if (msg is RpcIndexMethod ri)
                 {
@@ -226,8 +226,10 @@ namespace Furesoft.Rpc.Mmf
                     Name = msg.Name,
                     ReturnValue = r
                 };
+                returner.Headers = msg.Headers;
+                //ToDo: fix headers
 
-                var ret = Bootstrapper.OnAfterRequest(returner, type);
+                var ret = Bootstrapper.OnAfterRequest(returner, _iTypes[msg.Interface], false);
 
                 var exSt = Singleton<ExceptionStack>.Instance;
                 if(exSt.Any())
