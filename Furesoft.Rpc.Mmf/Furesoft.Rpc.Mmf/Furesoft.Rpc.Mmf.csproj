@@ -45,8 +45,31 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Auth\AuthAttribute.cs" />
+    <Compile Include="Auth\AuthModule.cs" />
     <Compile Include="Communicator\MemoryMappedDataReceivedEventArgs.cs" />
     <Compile Include="Communicator\MemoryMappedFileCommunicator.cs" />
+    <Compile Include="ExceptionTrace.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="HeaderCollection.cs" />
+    <Compile Include="InformationApi\Attributes\ThrowsExceptionAttribute.cs" />
+    <Compile Include="InformationApi\Collections\ArgumentCollection.cs" />
+    <Compile Include="InformationApi\ArgumentInfo.cs" />
+    <Compile Include="InformationApi\Collections\PropertyInfoCollection.cs" />
+    <Compile Include="InformationApi\EventInfo.cs" />
+    <Compile Include="InformationApi\Collections\EventInfoCollection.cs" />
+    <Compile Include="InformationApi\Collections\ExceptionInfo.cs" />
+    <Compile Include="InformationApi\FuncInfo.cs" />
+    <Compile Include="InformationApi\Collections\FuncInfoCollection.cs" />
+    <Compile Include="IInterfaceInfo.cs" />
+    <Compile Include="InformationApi\InterfaceInfo.cs" />
+    <Compile Include="InformationApi\Collections\InterfaceInfoCollection.cs" />
+    <Compile Include="InformationApi\InterfaceInfoPart.cs" />
+    <Compile Include="InformationApi\PropertyInfo.cs" />
+    <Compile Include="InformationApi\InterfaceInfoBuilder.cs" />
+    <Compile Include="InformationApi\InterfaceInfoImpl.cs" />
+    <Compile Include="InformationApi\Utils.cs" />
     <Compile Include="InterfaceProxy.cs" />
     <Compile Include="Messages\RpcEventCallMessage.cs" />
     <Compile Include="Messages\RpcExceptionMessage.cs" />
@@ -69,13 +92,19 @@
     <Compile Include="Proxy\Optimization\BareBonesList.cs" />
     <Compile Include="Proxy\Optimization\BinderHash.cs" />
     <Compile Include="Proxy\Optimization\Util.cs" />
+    <Compile Include="RpcBootstrapper.cs" />
     <Compile Include="RpcClient.cs" />
     <Compile Include="RpcEvent.cs" />
     <Compile Include="RpcEventRepository.cs" />
     <Compile Include="RpcException.cs" />
     <Compile Include="RpcMessage.cs" />
+    <Compile Include="RpcSerializer.cs" />
     <Compile Include="RpcServer.cs" />
     <Compile Include="RpcServices.cs" />
+    <Compile Include="Serializer\BinarySerializer.cs" />
+    <Compile Include="Serializer\XamlSerializer.cs" />
+    <Compile Include="Singleton.cs" />
+    <Compile Include="InformationApi\StructCollector.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="package.nuspec">
@@ -83,5 +112,6 @@
     </None>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

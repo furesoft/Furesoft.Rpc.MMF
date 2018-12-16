@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Diagnostics;
+using System.IO;
 using Furesoft.Rpc.Mmf;
+using Furesoft.Rpc.Mmf.Serializer;
 using Interface;
 
 namespace Client
@@ -8,11 +11,20 @@ namespace Client
     {
         static void Main(string[] args)
         {
-            var client = new RpcClient("ExampleChannel");
+            var client = new RpcClient("ExampleChannel", null, null);
             client.Start();
+
+            var info = client.GetInfo<IMath>();
+
+            var tmp = Path.GetTempFileName() + ".cs";
+            File.WriteAllText(tmp, info.ToString());
+            Process.Start(tmp);
 
             var math = client.Bind<IMath>();
 
+            var p = math.AddPosition(10, 15);
+
+            math.MethodWithException();
             math.OnIndexChanged += Math_IndexChanged;
 
             Console.WriteLine("result: " + math.Add(15, 5));

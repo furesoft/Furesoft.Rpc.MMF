@@ -7,7 +7,7 @@ namespace Furesoft.Rpc.Mmf
     {
         private static Dictionary<string, RpcEvent> events = new Dictionary<string, RpcEvent>();
 
-        public static RpcEvent Get(string name)
+        public static RpcEvent Get(string name, IRpcChannel channel)
         {
             if(events.ContainsKey(name))
             {
@@ -16,7 +16,7 @@ namespace Furesoft.Rpc.Mmf
             else
             {
                 //ToDo: renew event system to call on server and recieve on client
-                events.Add(name, new RpcEvent(name));
+                events.Add(name, new RpcEvent(name, channel));
 
                 return events[name];
             }

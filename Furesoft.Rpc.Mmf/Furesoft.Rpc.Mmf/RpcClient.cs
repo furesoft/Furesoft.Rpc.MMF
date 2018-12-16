@@ -1,6 +1,8 @@
 ﻿using Furesoft.Rpc.Mmf.Communicator;
+using Furesoft.Rpc.Mmf.InformationApi;
 using Furesoft.Rpc.Mmf.Messages;
 using Furesoft.Rpc.Mmf.Proxy;
+using Furesoft.Rpc.Mmf.Serializer;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,13 +12,16 @@ using System.Threading.Tasks;
 
 namespace Furesoft.Rpc.Mmf
 {
-    public class RpcClient : IDisposable
+    public class RpcClient : IDisposable, IInterfaceInfo
     {
         //ToDo: make it generic to replace the method like to tcp
         private MemoryMappedFileCommunicator sender;
         private MemoryMappedFileCommunicator events;
 
-        public RpcClient(string name)
+        public RpcBootstrapper Bootstrapper;
+
+
+        public RpcClient(string name, RpcBootstrapper bootstrp = null, RpcSerializer serializer = null)
         {
             sender = new MemoryMappedFileCommunicator(name, 50000); ;
 
@@ -28,11 +33,18 @@ namespace Furesoft.Rpc.Mmf
             events.ReadPosition = 0;
             events.WritePosition = 2500;
             events.DataReceived += Events_DataReceived;
+
+            Bootstrapper = bootstrp;
+            Serializer = serializer;
+
+            if (Serializer == null) Serializer = new XamlSerializer();
+
+            Bootstrapper?.Boot();
         }
 
         private void Events_DataReceived(object sender, MemoryMappedDataReceivedEventArgs e)
         {
-            var response = RpcServices.Deserialize(e.Data);
+            var response = Serializer.Deserialize(e.Data);
 
             if (response is RpcEventCallMessage ev)
             {
@@ -49,15 +61,17 @@ namespace Furesoft.Rpc.Mmf
         [DebuggerStepThrough]
         private void Sender_DataReceived(object sender, MemoryMappedDataReceivedEventArgs e)
         {
-            var response = RpcServices.Deserialize(e.Data);
+            var response = Serializer.Deserialize(e.Data);
 
             if (response is RpcMethodAwnser awnser)
             {
                 ReturnValue = awnser.ReturnValue;
+                var ret = Bootstrapper?.OnAfterRequest(awnser, Type.GetType(response.Interface));
+                if (ret != null) ReturnValue = ret;
             }
             else if (response is RpcExceptionMessage ex)
             {
-                throw new RpcException(ex.Interface, ex.Name, new Exception(ex.Message));
+                Singleton<ExceptionStack>.Instance.Push(new RpcException(ex.Interface, ex.Name, new Exception(ex.Message)));
             }
 
             mre.Set();
@@ -72,6 +86,9 @@ namespace Furesoft.Rpc.Mmf
         object ReturnValue;
         ManualResetEvent mre = new ManualResetEvent(false);
 
+        public RpcSerializer Serializer { get; }
+
+        [DebuggerStepThrough]
         public object CallMethod<Interface>(string methodname, params object[] args)
             where Interface : class
         {
@@ -84,9 +101,15 @@ namespace Furesoft.Rpc.Mmf
                 Args = args.ToList()
             };
 
-            sender.Write(RpcServices.Serialize(m));
+            Bootstrapper?.OnBeforeRequest(m, typeof(Interface));
+            sender.Write(Serializer.Serialize(m));
 
             mre.WaitOne();
+
+            if(Singleton<ExceptionStack>.Instance.Any())
+            {
+                throw Singleton<ExceptionStack>.Instance.Pop();
+            }
 
             return ReturnValue;
         }
@@ -133,7 +156,7 @@ namespace Furesoft.Rpc.Mmf
                 Value = value
             };
 
-            sender.Write(RpcServices.Serialize(m));
+            sender.Write(Serializer.Serialize(m));
 
             mre.WaitOne();
         }
@@ -148,7 +171,7 @@ namespace Furesoft.Rpc.Mmf
                 Indizes = indizes
             };
 
-            sender.Write(RpcServices.Serialize(m));
+            sender.Write(Serializer.Serialize(m));
 
             mre.WaitOne();
 
@@ -176,6 +199,22 @@ namespace Furesoft.Rpc.Mmf
         public void Dispose()
         {
             sender.Dispose();
+        }
+
+        public InterfaceInfo GetInfo(string name)
+        {
+            var api = Bind<IInterfaceInfo>();
+
+            return api.GetInfo(name);
+        }
+
+        public InterfaceInfo GetInfo<T>()
+        {
+            var api = Bind<IInterfaceInfo>();
+
+            Thread.Sleep(10);
+
+            return api.GetInfo(typeof(T).Name);
         }
     }
 }

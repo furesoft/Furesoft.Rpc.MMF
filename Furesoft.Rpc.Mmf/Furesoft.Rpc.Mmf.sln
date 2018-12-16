@@ -13,8 +13,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Client\Client.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Interface", "Interface\Interface.csproj", "{CC3A785C-0549-4CB0-A303-3B8F63AF9831}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Furesoft.Rpc", "Furesoft.Rpc\Furesoft.Rpc.csproj", "{F36DF7CD-A51C-488E-9D4E-A298EBC35E2E}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,10 +35,6 @@ Global
 		{CC3A785C-0549-4CB0-A303-3B8F63AF9831}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CC3A785C-0549-4CB0-A303-3B8F63AF9831}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CC3A785C-0549-4CB0-A303-3B8F63AF9831}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F36DF7CD-A51C-488E-9D4E-A298EBC35E2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F36DF7CD-A51C-488E-9D4E-A298EBC35E2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F36DF7CD-A51C-488E-9D4E-A298EBC35E2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F36DF7CD-A51C-488E-9D4E-A298EBC35E2E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
