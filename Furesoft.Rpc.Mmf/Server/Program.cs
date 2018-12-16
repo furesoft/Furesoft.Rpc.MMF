@@ -3,6 +3,8 @@ using Furesoft.Rpc.Mmf.Auth;
 using Furesoft.Rpc.Mmf.Serializer;
 using Interface;
 using System;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading;
 
 namespace Server
@@ -33,7 +35,9 @@ namespace Server
     {
         public override void Boot()
         {
-            AuthModule.Enable(this, TimeSpan.FromHours(1));
+            AuthModule.AppID = Guid.Parse(GetType().Assembly.GetCustomAttribute<GuidAttribute>().Value);
+
+            AuthModule.Enable(this);
             base.Boot();
         }
     }

@@ -1,52 +1,83 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Furesoft.Rpc.Mmf.Auth
 {
     public class Token
     {
-        public Guid AppID { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public bool IsExpired { get; set; }
-
-        public static Token Create(Guid id)
+        public static TokenValidation ValidateToken(string reason, string token, Guid SecurityStamp, Guid Id)
         {
-            var t = new Token()
+            var result = new TokenValidation();
+            byte[] data = Convert.FromBase64String(token);
+            byte[] _time = data.Take(8).ToArray();
+            byte[] _key = data.Skip(8).Take(16).ToArray();
+            byte[] _reason = data.Skip(24).Take(4).ToArray();
+            byte[] _Id = data.Skip(28).ToArray();
+
+            DateTime when = DateTime.FromBinary(BitConverter.ToInt64(_time, 0));
+            if (when < DateTime.UtcNow.AddHours(-24))
             {
-                AppID = id,
-                CreatedAt = DateTime.Now
-            };
+                result.Errors.Add(TokenValidationStatus.Expired);
+            }
 
-            return t;
+            Guid gKey = new Guid(_key);
+            if (gKey.ToString() != SecurityStamp.ToString())
+            {
+                result.Errors.Add(TokenValidationStatus.WrongGuid);
+            }
+
+            if (reason != GetString(_reason))
+            {
+                result.Errors.Add(TokenValidationStatus.WrongPurpose);
+            }
+
+            if (Id.ToString() != GetString(_Id))
+            {
+                result.Errors.Add(TokenValidationStatus.WrongUser);
+            }
+
+            return result;
         }
 
-        public bool Validate(TimeSpan expireTime)
+        private static string GetString(byte[] data)
         {
-            IsExpired = CreatedAt < DateTime.Now.Add(expireTime);
-
-            return IsExpired;
+            return System.Text.Encoding.ASCII.GetString(data);
         }
 
-        public override string ToString()
+        public static string GenerateToken(string reason, Guid SecurityStamp, Guid Id)
         {
-            byte[] time = BitConverter.GetBytes(CreatedAt.ToBinary());
-            byte[] key = Guid.NewGuid().ToByteArray();
-            byte[] id = AppID.ToByteArray();
+            byte[] _time = BitConverter.GetBytes(DateTime.UtcNow.ToBinary());
+            byte[] _key = SecurityStamp.ToByteArray();
+            byte[] _Id = GetBytes(Id.ToString());
+            byte[] _reason = GetBytes(reason);
+            byte[] data = new byte[_time.Length + _key.Length + _reason.Length + _Id.Length];
 
-            byte[] raw = id.Concat(time).Concat(key).ToArray();
+            System.Buffer.BlockCopy(_time, 0, data, 0, _time.Length);
+            System.Buffer.BlockCopy(_key, 0, data, _time.Length, _key.Length);
+            System.Buffer.BlockCopy(_reason, 0, data, _time.Length + _key.Length, _reason.Length);
+            System.Buffer.BlockCopy(_Id, 0, data, _time.Length + _key.Length + _reason.Length, _Id.Length);
 
-            return Convert.ToBase64String(raw);
+            return Convert.ToBase64String(data.ToArray());
         }
 
-        public static Token Parse(string token)
+        private static byte[] GetBytes(string raw)
         {
-            var t = new Token();
-            var raw = Convert.FromBase64String(token);
+            return System.Text.Encoding.ASCII.GetBytes(raw);
+        }
 
-            t.AppID = new Guid(raw.Take(16).ToArray());
-            t.CreatedAt = DateTime.FromBinary(BitConverter.ToInt64(raw, 0));
+        public class TokenValidation
+        {
+            public bool Validated { get { return Errors.Count == 0; } }
+            public readonly List<TokenValidationStatus> Errors = new List<TokenValidationStatus>();
+        }
 
-            return t;
+        public enum TokenValidationStatus
+        {
+            Expired,
+            WrongUser,
+            WrongPurpose,
+            WrongGuid
         }
     }
 }

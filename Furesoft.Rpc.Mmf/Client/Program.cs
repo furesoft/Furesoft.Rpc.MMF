@@ -63,7 +63,7 @@ namespace Client
     {
         public override void Boot()
         {
-            AuthModule.Enable(this, TimeSpan.FromHours(4));
+            AuthModule.Enable(this);
         }
     }
 }

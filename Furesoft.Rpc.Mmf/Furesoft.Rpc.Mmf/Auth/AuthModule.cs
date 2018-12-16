@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace Furesoft.Rpc.Mmf.Auth
@@ -9,21 +10,21 @@ namespace Furesoft.Rpc.Mmf.Auth
         public static bool IsAuthenticatet = false;
         public static List<string> Claims = new List<string>();
 
-        public static TimeSpan ExpireToken;
+        public static Guid AppID;
+        internal static string Reason = "RCA";
+        internal static Guid Stamp = Guid.Parse("FDDBD5D4-1661-4D84-8DBF-070319EF83F1");
 
-        public static void Enable(RpcBootstrapper bstrp, TimeSpan expireToken)
+        public static void Enable(RpcBootstrapper bstrp)
         {
             bstrp.AfterRequest += Bstrp_AfterRequest;
             bstrp.BeforeRequest += Bstrp_BeforeRequest;
-
-            ExpireToken = expireToken;
         }
 
         private static RpcMessage Bstrp_BeforeRequest(RpcMessage arg1, Type arg2, bool clientMode)
         {
             if (clientMode)
             {
-                arg1.AddHeader("Authentication: " + Token.Create(Guid.NewGuid()));
+                arg1.AddHeader("Authentication: " + Token.GenerateToken(Reason, AppID, Stamp));
             }
 
             return arg1;
@@ -43,11 +44,11 @@ namespace Furesoft.Rpc.Mmf.Auth
                 else
                 {
                     var t = arg1.GetHeader("Authentication");
-                    var token = Token.Parse(t);
+                    var token = Token.ValidateToken(Reason, t, Stamp, AppID);
 
                     if (token != null)
                     {
-                        if (token.Validate(ExpireToken))
+                        if (token.Validated)
                         {
                             if (Claims.Contains(attr.Claim))
                             {
@@ -58,7 +59,7 @@ namespace Furesoft.Rpc.Mmf.Auth
                         }
                         else
                         {
-                            return ThrowException(method);
+                            return ThrowException(method, "Token Validation Error: " + Enum.GetName(typeof(Token.TokenValidationStatus), token.Errors.First()));
                         }
                     }
                     else
@@ -73,9 +74,9 @@ namespace Furesoft.Rpc.Mmf.Auth
             }
         }
 
-        private static object ThrowException(MethodInfo method)
+        private static object ThrowException(MethodInfo method, string msg = "")
         {
-            var expt = new MethodAccessException();
+            var expt = new MethodAccessException(msg);
             Singleton<ExceptionStack>.Instance.Push(expt);
 
             return Activator.CreateInstance(method.ReturnType);
