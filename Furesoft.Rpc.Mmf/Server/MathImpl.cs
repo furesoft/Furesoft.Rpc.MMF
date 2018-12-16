@@ -33,7 +33,7 @@ namespace Server
         public int Add(int x, int y)
         {
             OnIndexChanged["hello: " + (x + y), EventArgs.Empty]();
-
+            
             return x + y;
         }
 
