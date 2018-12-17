@@ -13,6 +13,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Client\Client.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Interface", "Interface\Interface.csproj", "{CC3A785C-0549-4CB0-A303-3B8F63AF9831}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Furesoft.Rpc.Mmf.Json", "Furesoft.Rpc.Mmf.Json\Furesoft.Rpc.Mmf.Json.csproj", "{62549544-2AED-4ABF-8E7C-E99BE3A88A78}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Extensions", "Extensions", "{31645FC0-DCEC-40E3-BE50-7C5CE199C3D2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +39,10 @@ Global
 		{CC3A785C-0549-4CB0-A303-3B8F63AF9831}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CC3A785C-0549-4CB0-A303-3B8F63AF9831}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CC3A785C-0549-4CB0-A303-3B8F63AF9831}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62549544-2AED-4ABF-8E7C-E99BE3A88A78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62549544-2AED-4ABF-8E7C-E99BE3A88A78}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62549544-2AED-4ABF-8E7C-E99BE3A88A78}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62549544-2AED-4ABF-8E7C-E99BE3A88A78}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -43,6 +51,7 @@ Global
 		{4BCCA576-7D13-437E-84B1-F81C4EA09312} = {04AA2E74-188A-4704-AF02-1A0002035173}
 		{92BBD987-3110-4C08-947A-FF68A2080D9B} = {04AA2E74-188A-4704-AF02-1A0002035173}
 		{CC3A785C-0549-4CB0-A303-3B8F63AF9831} = {04AA2E74-188A-4704-AF02-1A0002035173}
+		{62549544-2AED-4ABF-8E7C-E99BE3A88A78} = {31645FC0-DCEC-40E3-BE50-7C5CE199C3D2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {595244C5-B818-46DF-AB51-50EED6629B52}
