@@ -16,9 +16,7 @@ namespace Furesoft.Rpc.Mmf.InformationApi
                 var si = new StructInfo();
                 si.Name = t.Name;
 
-                //ToDo: fix recursive func call
                 si.Properties = InterfaceInfoBuilder.BuildPropInfoCol(t);
-
 
                 Structs.Add(si.Name, si);
             }
@@ -36,7 +34,6 @@ namespace Furesoft.Rpc.Mmf.InformationApi
 
             sb.AppendLine($"struct {Name} {{");
 
-            //ToDo: continue implement struct collector
             sb.Append(Utils.Indent(Properties.ToString()));
 
             sb.AppendLine("}");

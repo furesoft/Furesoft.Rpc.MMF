@@ -24,8 +24,6 @@ namespace Furesoft.Rpc.Mmf
 
             ret.Structs = StructCollector.Structs;
 
-            //ToDo: implement collect interface info
-
             return ret;
         }
 
@@ -162,8 +160,6 @@ namespace Furesoft.Rpc.Mmf
             {
                 StructCollector.CollectType(arg.ParameterType);
             }
-
-            //ToDo: continue argumentinfo build!
 
             return ai;
         }

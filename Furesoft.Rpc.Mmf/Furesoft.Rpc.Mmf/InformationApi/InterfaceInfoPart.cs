@@ -5,7 +5,6 @@ using System.Text;
 
 namespace Furesoft.Rpc.Mmf.InformationApi
 {
-    //ToDo: override tostring method on informationapi classes to build extended idl
     [Serializable]
     public abstract class InterfaceInfoPart
     {
