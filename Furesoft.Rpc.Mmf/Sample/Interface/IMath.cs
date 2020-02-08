@@ -27,16 +27,4 @@ namespace Interface
         [Description("Translate the given Point into negative value")]
         Point TranslatePoint(Point input);
     }
-
-    [Description("2D Point Coordinate")]
-    public struct Point
-    {
-        public int X { get; set; }
-        public int Y { get; set; }
-
-        public int GetX()
-        {
-            return X;
-        }
-    }
 }
