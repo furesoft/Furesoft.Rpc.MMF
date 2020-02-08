@@ -11,18 +11,7 @@ namespace Furesoft.Rpc.Mmf
 {
     public class RpcServer : IDisposable
     {
-        private MemoryMappedFileCommunicator listener;
-        internal Dictionary<string, object> _binds = new Dictionary<string, object>();
-
-        internal Dictionary<string, Type> _iTypes = new Dictionary<string, Type>();
-
-        internal Type GetInterfaceType(string name)
-        {
-            return _iTypes[name];
-        }
-
         public RpcBootstrapper Bootstrapper;
-        private readonly RpcSerializer Serializer;
 
         public RpcServer(string name, RpcBootstrapper bootstrp = null, RpcSerializer serializer = null)
         {
@@ -34,7 +23,7 @@ namespace Furesoft.Rpc.Mmf
 
             Bootstrapper = bootstrp;
             this.Serializer = serializer;
-            if (Serializer == null) Serializer = new XamlSerializer();
+            if (Serializer == null) Serializer = new BinarySerializer();
 
             Bind<IInterfaceInfo>(new InterfaceInfoImpl(this));
 
@@ -56,11 +45,6 @@ namespace Furesoft.Rpc.Mmf
         public void Dispose()
         {
             listener.Dispose();
-        }
-
-        public void Start()
-        {
-            listener.StartReader();
         }
 
         public IList<MethodInfo> GetIndexProperties(object obj)
@@ -95,7 +79,6 @@ namespace Furesoft.Rpc.Mmf
                         results.Add(getMethod);
                     }
                 }
-
             }
             catch (Exception ex)
             {
@@ -104,6 +87,7 @@ namespace Furesoft.Rpc.Mmf
 
             return results;
         }
+
         public IList<MethodInfo> SetIndexProperties(object obj)
         {
             if (obj == null)
@@ -136,7 +120,6 @@ namespace Furesoft.Rpc.Mmf
                         results.Add(getMethod);
                     }
                 }
-
             }
             catch (Exception ex)
             {
@@ -146,7 +129,23 @@ namespace Furesoft.Rpc.Mmf
             return results;
         }
 
-        object InvokeMethod(MethodInfo p, RpcMethod method, params object[] args)
+        public void Start()
+        {
+            listener.StartReader();
+        }
+
+        internal Dictionary<string, object> _binds = new Dictionary<string, object>();
+        internal Dictionary<string, Type> _iTypes = new Dictionary<string, Type>();
+
+        internal Type GetInterfaceType(string name)
+        {
+            return _iTypes[name];
+        }
+
+        private readonly RpcSerializer Serializer;
+        private MemoryMappedFileCommunicator listener;
+
+        private object InvokeMethod(MethodInfo p, RpcMethod method, params object[] args)
         {
             object r = null;
 
@@ -154,7 +153,7 @@ namespace Furesoft.Rpc.Mmf
             {
                 r = p.Invoke(_binds[method.Interface], args);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Singleton<ExceptionStack>.Instance.Push(ex);
             }
@@ -196,11 +195,11 @@ namespace Furesoft.Rpc.Mmf
                         InvokeMethod(p, ri, args.ToArray());
                     }
                 }
-                else if(msg is RpcMethod rm)
+                else if (msg is RpcMethod rm)
                 {
                     var name = rm.Name.Replace("get_", "");
 
-                    if(name.StartsWith("On"))
+                    if (name.StartsWith("On"))
                     {
                         r = RpcEventRepository.Get(name);
                         return;
@@ -232,7 +231,7 @@ namespace Furesoft.Rpc.Mmf
                 var ret = Bootstrapper.OnAfterRequest(returner, _iTypes[msg.Interface], false);
 
                 var exSt = Singleton<ExceptionStack>.Instance;
-                if(exSt.Any())
+                if (exSt.Any())
                 {
                     var errMsg = new RpcExceptionMessage(msg.Interface, msg.Name, exSt.Pop().ToString());
                     listener.Write(Serializer.Serialize(errMsg));

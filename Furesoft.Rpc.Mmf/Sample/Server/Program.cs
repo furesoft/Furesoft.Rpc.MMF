@@ -9,7 +9,6 @@ using System.Threading;
 
 namespace Server
 {
-    
     public class Program
     {
         public static void Main()
@@ -22,8 +21,10 @@ namespace Server
             AuthModule.Claims.Add("math:add");
 
             rpc.Bind<IMath>(new MathImpl());
-            
+
             rpc.Start();
+
+            Console.WriteLine("Service started");
 
             Console.ReadLine();
         }
@@ -35,7 +36,7 @@ namespace Server
     {
         public override void Boot()
         {
-            AuthModule.AppID = Guid.Parse(GetType().Assembly.GetCustomAttribute<GuidAttribute>().Value);
+            AuthModule.AppID = Guid.NewGuid();
 
             AuthModule.Enable(this);
             base.Boot();

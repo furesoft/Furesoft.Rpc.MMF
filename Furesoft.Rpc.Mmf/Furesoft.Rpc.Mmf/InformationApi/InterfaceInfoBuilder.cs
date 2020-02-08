@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
-using System.Xaml;
 using Furesoft.Rpc.Mmf.InformationApi;
 using Furesoft.Rpc.Mmf.InformationApi.Attributes;
 using Furesoft.Rpc.Mmf.InformationApi.Collections;
@@ -13,30 +11,30 @@ namespace Furesoft.Rpc.Mmf
 {
     internal class InterfaceInfoBuilder
     {
-        internal static InterfaceInfo StartBuild(Type iType)
+        internal static ArgumentInfo BuildArgInfo(ParameterInfo arg)
         {
-            var ret = new InterfaceInfo();
-            ret.Name = iType.Name;
-            ret.Description = GetDescription(iType);
-            ret.Functions = BuildFuncInfoColl(iType);
-            ret.ThrowsExceptionInfo = BuildExceptionInfo(iType);
-            ret.Properties = BuildPropInfoCol(iType);
+            var ai = new ArgumentInfo();
+            ai.Name = arg.Name;
+            ai.Description = GetDescription(arg);
+            ai.IsOptional = arg.IsOptional;
+            ai.Type = arg.ParameterType.Name;
+            ai.ThrowsExceptionInfo = BuildExceptionInfo(arg);
 
-            ret.Structs = StructCollector.Structs;
+            if (!arg.ParameterType.IsSimpleType())
+            {
+                StructCollector.CollectType(arg.ParameterType);
+            }
 
-            return ret;
+            return ai;
         }
 
-        internal static FuncInfoCollection BuildFuncInfoColl(Type iType)
+        internal static ArgumentCollection BuildArgInfoCol(ParameterInfo[] info)
         {
-            var funcs = iType.GetMethods();
-            var ret = new FuncInfoCollection();
+            var ret = new ArgumentCollection();
 
-            var fs = funcs.Where(_ => !_.Name.StartsWith("get_")).Where(_ => !_.Name.StartsWith("set_"));
-
-            foreach (var f in fs)
+            foreach (var arg in info)
             {
-                ret.Add(BuildFuncInfo(f));
+                ret.Add(BuildArgInfo(arg));
             }
 
             return ret;
@@ -62,6 +60,22 @@ namespace Furesoft.Rpc.Mmf
 
             return fi;
         }
+
+        internal static FuncInfoCollection BuildFuncInfoColl(Type iType)
+        {
+            var funcs = iType.GetMethods();
+            var ret = new FuncInfoCollection();
+
+            var fs = funcs.Where(_ => !_.Name.StartsWith("get_")).Where(_ => !_.Name.StartsWith("set_"));
+
+            foreach (var f in fs)
+            {
+                ret.Add(BuildFuncInfo(f));
+            }
+
+            return ret;
+        }
+
         internal static InformationApi.PropertyInfo BuildPropInfo(System.Reflection.PropertyInfo f)
         {
             var fi = new InformationApi.PropertyInfo();
@@ -87,6 +101,7 @@ namespace Furesoft.Rpc.Mmf
 
             return fi;
         }
+
         internal static InformationApi.Collections.PropertyInfoCollection BuildPropInfoCol(Type t)
         {
             var props = t.GetProperties();
@@ -100,24 +115,41 @@ namespace Furesoft.Rpc.Mmf
             return ret;
         }
 
+        internal static InterfaceInfo StartBuild(Type iType)
+        {
+            var ret = new InterfaceInfo();
+            ret.Name = iType.Name;
+            ret.Description = GetDescription(iType);
+            ret.Functions = BuildFuncInfoColl(iType);
+            ret.ThrowsExceptionInfo = BuildExceptionInfo(iType);
+            ret.Properties = BuildPropInfoCol(iType);
+
+            ret.Structs = StructCollector.Structs;
+
+            return ret;
+        }
+
         private static ExceptionInfo BuildExceptionInfo(MemberInfo f)
         {
             var att = f.GetCustomAttributes<ThrowsExceptionAttribute>();
 
             return BuildExceptionInfo(att);
         }
+
         private static ExceptionInfo BuildExceptionInfo(Type f)
         {
             var att = f.GetCustomAttributes<ThrowsExceptionAttribute>();
 
             return BuildExceptionInfo(att);
         }
+
         private static ExceptionInfo BuildExceptionInfo(ParameterInfo f)
         {
             var att = f.GetCustomAttributes<ThrowsExceptionAttribute>();
 
             return BuildExceptionInfo(att);
         }
+
         private static ExceptionInfo BuildExceptionInfo(IEnumerable<ThrowsExceptionAttribute> att)
         {
             if (att.Any())
@@ -133,35 +165,6 @@ namespace Furesoft.Rpc.Mmf
             }
 
             return new ExceptionInfo();
-        }
-
-        internal static ArgumentCollection BuildArgInfoCol(ParameterInfo[] info)
-        {
-            var ret = new ArgumentCollection();
-
-            foreach (var arg in info)
-            {
-                ret.Add(BuildArgInfo(arg));
-            }
-
-            return ret;
-        }
-
-        internal static ArgumentInfo BuildArgInfo(ParameterInfo arg)
-        {
-            var ai = new ArgumentInfo();
-            ai.Name = arg.Name;
-            ai.Description = GetDescription(arg);
-            ai.IsOptional = arg.IsOptional;
-            ai.Type = arg.ParameterType.Name;
-            ai.ThrowsExceptionInfo = BuildExceptionInfo(arg);
-
-            if (!arg.ParameterType.IsSimpleType())
-            {
-                StructCollector.CollectType(arg.ParameterType);
-            }
-
-            return ai;
         }
 
         private static string GetDescription(MemberInfo iType)

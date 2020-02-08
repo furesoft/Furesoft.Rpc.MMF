@@ -9,9 +9,17 @@ using Interface;
 
 namespace Client
 {
-    class Program
+    internal class Bootstrapper : RpcBootstrapper
     {
-        static void Main(string[] args)
+        public override void Boot()
+        {
+            AuthModule.Enable(this);
+        }
+    }
+
+    internal class Program
+    {
+        private static void Main(string[] args)
         {
             var client = new RpcClient("ExampleChannel", new Bootstrapper(), null);
             client.Start();
@@ -20,10 +28,6 @@ namespace Client
             var info = client.GetInfo<IMath>();
 
             Thread.Sleep(2000);
-
-            var tmp = Path.GetTempFileName() + ".cs";
-            File.WriteAllText(tmp, info?.ToString());
-            Process.Start(tmp);
 
             var math = client.Bind<IMath>();
 
@@ -36,17 +40,17 @@ namespace Client
             math.OnIndexChanged += Math_IndexChanged;
 
             Console.WriteLine("result: " + math.Add(15, 5));
-            
+
             math[10] = 5;
 
             Console.WriteLine("Index result: " + math[10]);
-            
 
             try
             {
                 //math.MethodWithException();
             }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
                 Console.WriteLine("Exception has thrown: " + ex.Message);
             }
 
@@ -56,14 +60,6 @@ namespace Client
         private static void Math_IndexChanged(object sender, EventArgs e)
         {
             Console.WriteLine(sender);
-        }
-    }
-
-    internal class Bootstrapper : RpcBootstrapper
-    {
-        public override void Boot()
-        {
-            AuthModule.Enable(this);
         }
     }
 }
