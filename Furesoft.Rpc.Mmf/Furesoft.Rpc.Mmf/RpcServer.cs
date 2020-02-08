@@ -138,6 +138,7 @@ namespace Furesoft.Rpc.Mmf
         }
 
         private readonly RpcSerializer Serializer;
+
         private MemoryMappedFileCommunicator listener;
 
         private object InvokeMethod(MethodInfo p, RpcMethod method, params object[] args)
