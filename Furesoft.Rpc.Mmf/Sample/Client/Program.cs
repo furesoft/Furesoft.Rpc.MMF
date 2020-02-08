@@ -1,5 +1,6 @@
 ﻿using System;
 using Furesoft.Rpc.Mmf;
+using Interface;
 
 namespace Client
 {
@@ -10,28 +11,13 @@ namespace Client
             var client = new RpcClient("ExampleChannel", null);
             client.Start();
 
-            var interfaces = client.GetInterfaceNames();
-            var info = client.GetInfo<IMath>();
-
             var math = client.Bind<IMath>();
 
-            var p = math.AddPosition(10, 15);
-            p = math.TranslatePoint(p);
-
-            p.GetX();
-
-            //math.MethodWithException();
-            math.OnIndexChanged += Math_IndexChanged;
-
-            Console.WriteLine("result: " + math.Add(15, 5));
-
-            math[10] = 5;
-
-            Console.WriteLine("Index result: " + math[10]);
+            var p = math.Add(10, 15);
 
             try
             {
-                //math.MethodWithException();
+                math.MethodWithException();
             }
             catch (Exception ex)
             {

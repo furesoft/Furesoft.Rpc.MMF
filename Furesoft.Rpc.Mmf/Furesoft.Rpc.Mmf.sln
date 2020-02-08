@@ -5,13 +5,13 @@ VisualStudioVersion = 16.0.29728.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sample", "Sample", "{04AA2E74-188A-4704-AF02-1A0002035173}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Furesoft.Rpc.MMF", "Furesoft.Rpc.MMF\Furesoft.Rpc.MMF.csproj", "{C52418D4-1A44-4DB2-8208-57F4EDB3C224}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Furesoft.Rpc.MMF", "Furesoft.Rpc.MMF\Furesoft.Rpc.MMF.csproj", "{C52418D4-1A44-4DB2-8208-57F4EDB3C224}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Sample\Client\Client.csproj", "{98CF6125-9E91-43F8-990A-F7C6FC27663F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client", "Sample\Client\Client.csproj", "{98CF6125-9E91-43F8-990A-F7C6FC27663F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Sample\Server\Server.csproj", "{4223B0AA-C0DB-4D14-BB6B-CD0281222DB8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server", "Sample\Server\Server.csproj", "{4223B0AA-C0DB-4D14-BB6B-CD0281222DB8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Interface", "Sample\Interface\Interface.csproj", "{A3CEDAD1-66E5-4210-9EF1-05C25B94DBAF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Interface", "Sample\Interface\Interface.csproj", "{E6D52A6C-1A19-4736-99FB-E86041CB5440}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,10 +31,10 @@ Global
 		{4223B0AA-C0DB-4D14-BB6B-CD0281222DB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4223B0AA-C0DB-4D14-BB6B-CD0281222DB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4223B0AA-C0DB-4D14-BB6B-CD0281222DB8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A3CEDAD1-66E5-4210-9EF1-05C25B94DBAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A3CEDAD1-66E5-4210-9EF1-05C25B94DBAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A3CEDAD1-66E5-4210-9EF1-05C25B94DBAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A3CEDAD1-66E5-4210-9EF1-05C25B94DBAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E6D52A6C-1A19-4736-99FB-E86041CB5440}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E6D52A6C-1A19-4736-99FB-E86041CB5440}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E6D52A6C-1A19-4736-99FB-E86041CB5440}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E6D52A6C-1A19-4736-99FB-E86041CB5440}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -42,7 +42,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{98CF6125-9E91-43F8-990A-F7C6FC27663F} = {04AA2E74-188A-4704-AF02-1A0002035173}
 		{4223B0AA-C0DB-4D14-BB6B-CD0281222DB8} = {04AA2E74-188A-4704-AF02-1A0002035173}
-		{A3CEDAD1-66E5-4210-9EF1-05C25B94DBAF} = {04AA2E74-188A-4704-AF02-1A0002035173}
+		{E6D52A6C-1A19-4736-99FB-E86041CB5440} = {04AA2E74-188A-4704-AF02-1A0002035173}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {595244C5-B818-46DF-AB51-50EED6629B52}
