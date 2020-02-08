@@ -1,5 +1,4 @@
 ﻿using Furesoft.Rpc.Mmf;
-using Furesoft.Rpc.Mmf.Auth;
 using Furesoft.Rpc.Mmf.InformationApi.Attributes;
 using System;
 using System.ComponentModel;
@@ -9,26 +8,24 @@ namespace Interface
     [Description("Test Interface")]
     public interface IMath
     {
-        [Description("sum two values")]
-        [Auth("math:add")]
-        int Add(int x, int y);
+        [Description("Raised when Index changed")]
+        RpcEvent OnIndexChanged { get; set; }
 
-        [Auth]
-        [ThrowsException(typeof(ArgumentNullException))]
-        object MethodWithException();
+        [Description("Get/Set Value based on index")]
+        int this[int index] { get; set; }
+
+        [Description("sum two values")]
+        int Add(int x, int y);
 
         [Description("Adds a Point to the given coordinates")]
         [ThrowsException(typeof(ArgumentOutOfRangeException))]
         Point AddPosition(int x, int y);
 
+        [ThrowsException(typeof(ArgumentNullException))]
+        object MethodWithException();
+
         [Description("Translate the given Point into negative value")]
         Point TranslatePoint(Point input);
-
-        [Description("Get/Set Value based on index")]
-        int this[int index] { get; set; }
-
-        [Description("Raised when Index changed")]
-        RpcEvent OnIndexChanged { get; set; }
     }
 
     [Description("2D Point Coordinate")]

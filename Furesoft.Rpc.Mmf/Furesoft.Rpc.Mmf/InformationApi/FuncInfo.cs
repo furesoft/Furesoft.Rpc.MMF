@@ -8,7 +8,6 @@ namespace Furesoft.Rpc.Mmf.InformationApi
     public class FuncInfo : InterfaceInfoPart
     {
         public ArgumentCollection Arguments { get; set; } = new ArgumentCollection();
-        public bool NeedsAuth { get; set; }
         public string ReturnType { get; set; }
 
         public override string ToString()
@@ -17,11 +16,6 @@ namespace Furesoft.Rpc.Mmf.InformationApi
 
             sb.AppendLine(Environment.NewLine);
             sb.AppendLine(base.ToString());
-
-            if (NeedsAuth)
-            {
-                sb.AppendLine("//NeedAuth");
-            }
 
             sb.AppendLine($"func {Name}({Arguments.ToString()}) -> {ReturnType};\r\n");
             sb.AppendLine("");

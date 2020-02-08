@@ -14,11 +14,9 @@ namespace Furesoft.Rpc.Mmf
 {
     public class RpcClient : IDisposable, IInterfaceInfo
     {
-        public RpcBootstrapper Bootstrapper;
-
         public RpcSerializer Serializer { get; }
 
-        public RpcClient(string name, RpcBootstrapper bootstrp = null, RpcSerializer serializer = null)
+        public RpcClient(string name, RpcSerializer serializer = null)
         {
             sender = new MemoryMappedFileCommunicator(name, 50000); ;
 
@@ -31,12 +29,9 @@ namespace Furesoft.Rpc.Mmf
             events.WritePosition = 2500;
             events.DataReceived += Events_DataReceived;
 
-            Bootstrapper = bootstrp;
             Serializer = serializer;
 
             if (Serializer == null) Serializer = new BinarySerializer();
-
-            Bootstrapper?.Boot();
         }
 
         public Interface Bind<Interface>()
@@ -78,7 +73,6 @@ namespace Furesoft.Rpc.Mmf
                 Args = args.ToList()
             };
 
-            m = (RpcMethod)Bootstrapper?.OnBeforeRequest(m, typeof(Interface), true);
             sender.Write(Serializer.Serialize(m));
 
             mre.WaitOne();
@@ -231,15 +225,11 @@ namespace Furesoft.Rpc.Mmf
             if (response is RpcMethodAwnser awnser)
             {
                 ReturnValue = awnser.ReturnValue;
-                var ret = Bootstrapper?.OnAfterRequest(awnser, _iTypes[response.Interface], true);
-                if (ret != null) ReturnValue = ret;
             }
             else if (response is RpcExceptionMessage ex)
             {
                 Singleton<ExceptionStack>.Instance.Push(new RpcException(ex.Interface, ex.Name, new Exception(ex.Message)));
             }
-
-            Bootstrapper?.HandleRequest(response, this);
 
             mre.Set();
         }

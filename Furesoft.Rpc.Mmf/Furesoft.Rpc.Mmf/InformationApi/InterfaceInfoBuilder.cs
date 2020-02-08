@@ -47,7 +47,6 @@ namespace Furesoft.Rpc.Mmf
             fi.Name = f.Name;
             fi.Description = GetDescription(f);
             fi.ReturnType = f.ReturnType.Name;
-            fi.NeedsAuth = f.GetCustomAttribute<Auth.AuthAttribute>() != null;
 
             if (!f.ReturnType.IsSimpleType())
             {

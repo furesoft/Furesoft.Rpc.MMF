@@ -11,9 +11,7 @@ namespace Furesoft.Rpc.Mmf
 {
     public class RpcServer : IDisposable
     {
-        public RpcBootstrapper Bootstrapper;
-
-        public RpcServer(string name, RpcBootstrapper bootstrp = null, RpcSerializer serializer = null)
+        public RpcServer(string name, RpcSerializer serializer = null)
         {
             listener = new MemoryMappedFileCommunicator(name, 50000);
 
@@ -21,13 +19,10 @@ namespace Furesoft.Rpc.Mmf
             listener.ReadPosition = 2500;
             listener.DataReceived += Listener_DataReceived;
 
-            Bootstrapper = bootstrp;
             this.Serializer = serializer;
             if (Serializer == null) Serializer = new BinarySerializer();
 
             Bind<IInterfaceInfo>(new InterfaceInfoImpl(this));
-
-            Bootstrapper?.Boot();
         }
 
         public void Bind<Interface>(Interface obj)
@@ -165,8 +160,6 @@ namespace Furesoft.Rpc.Mmf
         {
             var msg = Serializer.Deserialize(e.Data);
 
-            Bootstrapper.HandleRequest(msg, this);
-
             object r = null;
 
             if (msg == null) return;
@@ -174,8 +167,6 @@ namespace Furesoft.Rpc.Mmf
             if (_binds.ContainsKey(msg.Interface))
             {
                 var type = _binds[msg.Interface].GetType();
-
-                msg = Bootstrapper.OnBeforeRequest(msg, type, false);
 
                 if (msg is RpcIndexMethod ri)
                 {
@@ -228,8 +219,6 @@ namespace Furesoft.Rpc.Mmf
                 returner.Headers = msg.Headers;
                 //ToDo: fix headers
 
-                var ret = Bootstrapper.OnAfterRequest(returner, _iTypes[msg.Interface], false);
-
                 var exSt = Singleton<ExceptionStack>.Instance;
                 if (exSt.Any())
                 {
@@ -238,8 +227,6 @@ namespace Furesoft.Rpc.Mmf
 
                     return;
                 }
-
-                returner.ReturnValue = ret;
 
                 listener.Write(Serializer.Serialize(returner));
             }
